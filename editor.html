@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <title>Editor de Texto</title>
+
+        <style>
+            #txtbox, #text {
+            width:800px;
+            height:400px;
+            padding:10px;
+            background:#EFEFEF;
+            border:2px outset #222222;
+            border-radius: 15px;
+            }
+
+            #text {
+            display:none;
+            }
+
+            button, input, select {
+            background:#FFFFFF;
+            border: 1px outset #EFEFEF;
+            background-color: #FFFFFF;
+            border-radius: 6px;
+            }
+        </style>
+
+        <script>
+            //Función de Botones
+            function init(x,val) {
+            document.getElementById('text').value=document.getElementById('txtbox').innerHTML;
+            document.execCommand(x,false,val);
+            document.getElementById('txtbox').focus();
+            }
+
+            //Función seleccionar tipo de fuente
+            function tFuente(){
+            var select = document.getElementById("fuente"), //El <select>
+            value = select.value, //El valor seleccionado
+            text = select.options[select.selectedIndex].innerText; //El texto de la opción seleccionada
+            document.execCommand('fontName',false,text);
+                }
+
+            //Función seleccionar tamaño de fuente
+            function tamFuente(){
+            var select = document.getElementById("tamfuente"), //El <select>
+            value = select.value, //El valor seleccionado
+            text = select.options[select.selectedIndex].innerText; //El texto de la opción seleccionada
+            document.execCommand('fontSize',false,text);
+            }
+
+            //Función imprimir texto
+            function printDiv(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+            }
+
+            //Función Guardar Archivo
+            function saveTextAsFile() {
+            var textToWrite = document.getElementById("txtbox").innerHTML;
+            var textFileAsBlob = new Blob([ textToWrite ], { type: "text/plain" });
+            var fileNameToSaveAs = "archivo.txt";
+            var downloadLink = document.createElement("a");
+            downloadLink.download = fileNameToSaveAs;
+            downloadLink.innerHTML = "Download File";
+            if (window.webkitURL != null) {
+            // Chrome allows the link to be clicked without actually adding it to the DOM.
+            downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+            } else {
+            // Firefox requires the link to be added to the DOM before it can be clicked.
+            downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+            downloadLink.onclick = destroyClickedElement;
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+            }
+            downloadLink.click();
+            }
+            var button = document.getElementById("save");
+            button.addEventListener("click", saveTextAsFile);
+            function destroyClickedElement(event) {
+            // remove the link from the DOM
+            document.body.removeChild(event.target);
+            }
+        </script>
+    </head>
+    
+<center>
+    <body background="multimedia/fondo.png">
+
+        <p style="width:800px;height:auto;padding:10px">
+            <h1 style="color: #222222">Editor de Texto</h1>
+            <h5 style="color: #222222">Autor: Andy Enríquez</h5>
+             <!-- Seleccionar tipo de fuente -->
+             <select name="fuente" id="fuente" onclick="tFuente()" style="width:150px;height:30px;cursor:pointer">
+                <option value="Arial">Arial</option> 
+                <option value="Symbol" selected>Symbol</option>
+                <option value="Calibri" selected>Calibri</option>
+                <option value="Verdana" selected>Verdana</option>
+                <option value="Arial Black" selected>Arial Black</option>
+                <option value="Comic Sans MS" selected>Comic Sans MS</option>
+                <option value="Century Gothic" selected>Century Gothic</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Arial Narrow" selected>Arial Narrow</option>
+            </select>
+            <!-- Seleccionar tamaño de fuente -->
+            <select name="tamfuente" id="tamfuente" onclick="tamFuente()" style="width:35px;height:30px;cursor:pointer">
+                <option value="1">1</option> 
+                <option value="2">2</option> 
+                <option value="3">3</option> 
+                <option value="4">4</option> 
+                <option value="5">5</option> 
+                <option value="6">6</option> 
+                <option value="7">7</option> 
+            </select>
+            <!-- Botón Negrita -->
+            <button onclick="init('bold',null)" style="cursor:pointer"><img src="multimedia/negrita.png"></button>
+            <!-- Botón Cursiva -->
+            <button onclick="init('italic',null)" style="cursor:pointer"><img src="multimedia/cursiva.png"></button>
+            <!-- Botón Subrayado -->
+            <button onclick="init('underline',null)" style="cursor:pointer"><img src="multimedia/subrayada.png"></button>
+            <!-- Botón Alinear Izquierda -->
+            <button onclick="init('justifyleft',null)" style="cursor:pointer"><img src="multimedia/izquierda.png"></button>
+            <!-- Botón Centrar -->
+            <button onclick="init('justifycenter',null)" style="cursor:pointer"><img src="multimedia/centrar.png"></button>
+            <!-- Botón Alinear Derecha -->
+            <button onclick="init('justifyright',null)" style="cursor:pointer"><img src="multimedia/derecha.png"></button>
+            <!-- Botón Justificar -->
+            <button onclick="init('justifyfull',null)" style="cursor:pointer"><img src="multimedia/justificar.png"></button>
+            <!-- Botón Deshacer -->
+            <button onclick="init('undo',null)" style="cursor:pointer"><img src="multimedia/deshacer.png"></button>
+            <!-- Botón Rehacer -->
+            <button onclick="init('redo',null)" style="cursor:pointer"><img src="multimedia/rehacer.png"></button> 
+            <!-- Botón Imprimir -->
+            <button onclick="printDiv('txtbox')" style="cursor:pointer"><img src="multimedia/imprimir.PNG"></button>
+            <!-- Botón Guardar -->
+            <button type="button" value="save" id="save" onclick="saveTextAsFile()" style="cursor:pointer"><img src="multimedia/guardar.PNG"></button>
+        </p>
+        <div id="txtbox" contenteditable="true"></div>
+        <textarea id="text" name="text"></textarea>
+    </body>
+</center>
+</html>
